@@ -20,6 +20,8 @@ namespace JorJika.S3
         /// <returns></returns>
         /// <exception cref="BucketNameIsNotValidException">Thrown when bucket name is invalid.</exception>
         /// <exception cref="BucketExistsException">Thrown when bucket already exists with this name.</exception>
+        /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
+        /// <exception cref="S3BaseException">Thrown when exception is not handled.</exception>
         Task CreateBucket(string bucketName);
 
         /// <summary>
@@ -27,7 +29,10 @@ namespace JorJika.S3
         /// </summary>
         /// <param name="bucketName"></param>
         /// <returns></returns>
-        /// <exception cref="BucketDoesNotExistException">Thrown when bucket does not exist.</exception>
+        /// <exception cref="BucketNameIsNotValidException">Thrown when bucket name is invalid.</exception>
+        /// <exception cref="BucketNotFoundException">Thrown when bucket does not exist.</exception>
+        /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
+        /// <exception cref="S3BaseException">Thrown when exception is not handled.</exception>
         Task RemoveBucket(string bucketName);
 
         #endregion
