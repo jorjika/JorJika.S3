@@ -8,7 +8,7 @@ namespace JorJika.S3
     /// <summary>
     /// S3 client interface
     /// </summary>
-    public interface S3Client
+    public interface IS3Client
     {
         #region Bucket Operations
 
@@ -50,9 +50,10 @@ namespace JorJika.S3
         /// Gets object URL for downloading from storage (Temporary URL support varies by implementation)
         /// </summary>
         /// <param name="objectName">Object name</param>
+        /// <param name="expiresInSeconds">Temporary link expiration time in seconds. Defaults to 12 hours</param>
         /// <param name="bucketName">Bucket name - Optional if passed throuhg constructor</param>
         /// <returns>Returns temporary URL of object for download</returns>
-        Task<string> GetObjectURL(string objectName, string bucketName = null);
+        Task<string> GetObjectURL(string objectName, int expiresInSeconds = 10 * 60, string bucketName = null);
 
         /// <summary>
         /// Save binary object
