@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using JorJika.S3.Exceptions;
 
 namespace JorJika.S3
 {
@@ -17,6 +18,8 @@ namespace JorJika.S3
         /// </summary>
         /// <param name="bucketName">Bucket name - Validation: lower case alpha numeric characters plus dots.</param>
         /// <returns></returns>
+        /// <exception cref="BucketNameIsNotValidException">Thrown when bucket name is invalid.</exception>
+        /// <exception cref="BucketExistsException">Thrown when bucket already exists with this name.</exception>
         Task CreateBucket(string bucketName);
 
         /// <summary>
@@ -24,6 +27,7 @@ namespace JorJika.S3
         /// </summary>
         /// <param name="bucketName"></param>
         /// <returns></returns>
+        /// <exception cref="BucketDoesNotExistException">Thrown when bucket does not exist.</exception>
         Task RemoveBucket(string bucketName);
 
         #endregion

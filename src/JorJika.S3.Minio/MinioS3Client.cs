@@ -1,4 +1,5 @@
 ﻿using JorJika.S3.Models;
+using JorJika.S3.Exceptions;
 using Minio;
 using Minio.DataModel;
 using Minio.Exceptions;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace JorJika.S3
 {
@@ -16,10 +18,17 @@ namespace JorJika.S3
         private MinioClient _client;
         private string _bucketName;
         private const string metaDataPrefix = "X-Amz-Meta-";
+        private readonly ILogger<IS3Client> _logger;
 
         #endregion
 
         #region Constructor
+
+        public MinioS3Client(string endpoint, string accessKey, string secretKey, string bucketName, ILogger<IS3Client> logger)
+                       : this(endpoint, accessKey, secretKey, bucketName)
+        {
+            _logger = logger;
+        }
 
         public MinioS3Client(string endpoint, string accessKey, string secretKey, string bucketName)
         {
@@ -31,33 +40,53 @@ namespace JorJika.S3
 
         #region Bucket operations
 
+        /// <summary>
+        /// Create bucket
+        /// </summary>
+        /// <param name="bucketName">Bucket name - Validation: lower case alpha numeric characters plus dots.</param>
+        /// <returns></returns>
+        /// <exception cref="BucketNameIsNotValidException">Thrown when bucket name is invalid.</exception>
+        /// <exception cref="BucketExistsException">Thrown when bucket already exists with this name.</exception>
         public async Task CreateBucket(string bucketName)
         {
+            Validation.ValidateBucketName(bucketName);
+
             var exists = await _client.BucketExistsAsync(bucketName.ToLower());
-            if (!exists)
-            {
-                await _client.MakeBucketAsync(bucketName.ToLower());
-            }
+
+            if (exists)
+                throw new BucketExistsException(bucketName);
+
+            await _client.MakeBucketAsync(bucketName.ToLower());
         }
 
+        /// <summary>
+        /// Remove bucket
+        /// </summary>
+        /// <param name="bucketName"></param>
+        /// <returns></returns>
+        /// <exception cref="BucketDoesNotExistException">Thrown when bucket does not exist.</exception>
         public async Task RemoveBucket(string bucketName)
         {
             var exists = await _client.BucketExistsAsync(bucketName.ToLower());
+
             if (!exists)
-            {
-                await _client.RemoveBucketAsync(bucketName.ToLower());
-            }
+                throw new BucketDoesNotExistException(bucketName);
+
+            await _client.RemoveBucketAsync(bucketName.ToLower());
         }
 
         #endregion
 
+        #region Object operations
 
         public async Task<S3Object> GetObjectInfo(string objectName, string bucketName = null)
         {
             var bucket = bucketName?.ToLower() ?? _bucketName;
 
-            ObjectStat result = null;
+            Validation.ValidateBucketName(bucket);
 
+            ObjectStat result = null;
+            
             try
             {
                 result = await _client.StatObjectAsync(bucket, objectName);
@@ -84,6 +113,8 @@ namespace JorJika.S3
         {
             var bucket = bucketName?.ToLower() ?? _bucketName;
 
+            Validation.ValidateBucketName(bucket);
+
             var objectInfo = await GetObjectInfo(objectName, bucket);
 
             if (objectInfo != null)
@@ -109,6 +140,9 @@ namespace JorJika.S3
         public async Task<string> GetObjectURL(string objectName, int expiresInSeconds = 600, string bucketName = null)
         {
             var bucket = bucketName?.ToLower() ?? _bucketName;
+
+            Validation.ValidateBucketName(bucket);
+
             try
             {
                 return await _client.PresignedGetObjectAsync(bucket, objectName, expiresInSeconds);
@@ -132,6 +166,10 @@ namespace JorJika.S3
         public async Task SaveObject(string objectName, byte[] objectData, string contentType = null, Dictionary<string, string> metaData = null, string bucketName = null)
         {
             var bucket = bucketName?.ToLower() ?? _bucketName;
+
+            Validation.ValidateBucketName(bucket);
+            Validation.ValidateObjectName(objectName);
+
             if (objectData != null)
                 using (var ms = new MemoryStream(objectData))
                 {
@@ -174,5 +212,7 @@ namespace JorJika.S3
 
             await SaveObject(objectName, objectData, "application/pdf", metaData, bucket);
         }
+
+        #endregion
     }
 }
