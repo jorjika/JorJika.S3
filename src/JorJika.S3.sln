@@ -7,6 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JorJika.S3", "JorJika.S3\Jo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JorJika.S3.Minio", "JorJika.S3.Minio\JorJika.S3.Minio.csproj", "{77105593-9FF4-4E1B-ACBD-0D5F03DF75A4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Abstractions", "Abstractions", "{E82070F0-6D92-4512-B6DE-B19F77A298FE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Implementations", "Implementations", "{5BE43CD4-1224-4032-BD5D-63C2CDE5DDFC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JorJika.S3.Minio.Tests", "JorJika.S3.Minio.Tests\JorJika.S3.Minio.Tests.csproj", "{5B0D50DB-31E2-408A-9DB6-BFE7334F7A7C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,9 +27,18 @@ Global
 		{77105593-9FF4-4E1B-ACBD-0D5F03DF75A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77105593-9FF4-4E1B-ACBD-0D5F03DF75A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77105593-9FF4-4E1B-ACBD-0D5F03DF75A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B0D50DB-31E2-408A-9DB6-BFE7334F7A7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B0D50DB-31E2-408A-9DB6-BFE7334F7A7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B0D50DB-31E2-408A-9DB6-BFE7334F7A7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B0D50DB-31E2-408A-9DB6-BFE7334F7A7C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{02C55273-65A6-40E4-9513-7F8033711905} = {E82070F0-6D92-4512-B6DE-B19F77A298FE}
+		{77105593-9FF4-4E1B-ACBD-0D5F03DF75A4} = {5BE43CD4-1224-4032-BD5D-63C2CDE5DDFC}
+		{5B0D50DB-31E2-408A-9DB6-BFE7334F7A7C} = {5BE43CD4-1224-4032-BD5D-63C2CDE5DDFC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6C7CD37F-34AF-4FD9-BF96-61F5328980D4}
