@@ -4,7 +4,7 @@ on:
   push:
     # Sequence of patterns matched against refs/tags
     tags:
-      - v1.*           # Push events to v1.0, v1.1, and v1.9 tags
+      - 1.*           # Push events to v1.0, v1.1, and v1.9 tags
 
 jobs:
   build:
@@ -17,9 +17,14 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.101
+        source-url: https://api.nuget.org/v3/index.json
+      env:
+          NUGET_AUTH_TOKEN: ${{secrets.NUGET_SECRET_JORJIKA}}
     #Exporting version to env variable
     - name: Set env
-      run: echo ::set-env name=RELEASE_VERSION::${GITHUB_REF:10}
+      run: |
+        echo ::set-env name=RELEASE_VERSION::${GITHUB_REF:10}
+        echo ::set-env name=NUGET_AUTH_TOKEN::${{secrets.NUGET_SECRET_JORJIKA}}
     - name: Install dependencies
       run: dotnet restore ./src/JorJika.S3.sln
     - name: Build
@@ -30,3 +35,13 @@ jobs:
       run: |
           echo $RELEASE_VERSION
           echo ${{ env.RELEASE_VERSION }}
+          
+    - name: Build solution and generate NuGet package
+      run: dotnet pack ./src/JorJika.S3.sln -c Release -p:PackageVersion=$RELEASE_VERSION -o ${GITHUB_WORKSPACE}/out  
+      
+    - name: Push JorJika.S3
+      run: dotnet nuget push ${GITHUB_WORKSPACE}/out/JorJika.S3.*.nupkg -k $NUGET_AUTH_TOKEN --skip-duplicate --no-symbols true
+    - name: Push JorJika.S3.Minio
+      run: dotnet nuget push ${GITHUB_WORKSPACE}/out/JorJika.S3.Minio.*.nupkg -k $NUGET_AUTH_TOKEN --skip-duplicate --no-symbols true
+    - name: Push JorJika.S3.AWS
+      run: dotnet nuget push ${GITHUB_WORKSPACE}/out/JorJika.S3.AWS.*.nupkg -k $NUGET_AUTH_TOKEN --skip-duplicate --no-symbols true
