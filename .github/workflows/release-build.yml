@@ -17,6 +17,9 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.101
+        source-url: https://api.nuget.org/v3/index.json
+      env:
+          NUGET_AUTH_TOKEN: ${{secrets.NUGET_SECRET_JORJIKA}}
     #Exporting version to env variable
     - name: Set env
       run: echo ::set-env name=RELEASE_VERSION::${GITHUB_REF:10}
@@ -30,3 +33,9 @@ jobs:
       run: |
           echo $RELEASE_VERSION
           echo ${{ env.RELEASE_VERSION }}
+          
+    - name: Build solution and generate NuGet package
+      run: dotnet pack ./src/JorJika.S3.sln -c Release -p:PackageVersion=$RELEASE_VERSION -o out  
+      
+    - name: Push generated package to GitHub registry
+      run: dotnet nuget push ./src/out/*.nupkg --skip-duplicate --no-symbols true
