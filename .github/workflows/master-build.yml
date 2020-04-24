@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - 'releases/**'  # Push events to branches matching refs/heads/releases/10
     paths:
       - 'src/**'
   pull_request:
