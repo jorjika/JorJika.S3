@@ -24,6 +24,7 @@ namespace JorJika.S3
 
         /// <summary>
         /// Validates object name
+        /// Allowed characters are: a-zA-Z0-9 / . - <= Character / Should not be at the end.
         /// </summary>
         /// <param name="objectName">Object name</param>
         /// <exception cref="ObjectNameIsNotValidException">Thrown when bucket name is invalid.</exception>
