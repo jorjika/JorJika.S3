@@ -23,7 +23,13 @@ jobs:
         dotnet-version: 3.1.101
     - name: Install dependencies
       run: dotnet restore
+    - name: Set env
+      run: echo ::set-env name=RELEASE_VERSION::${GITHUB_REF:10}
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: dotnet test --no-restore --verbosity normal
+    - name: Echo version
+      run: |
+          echo $RELEASE_VERSION
+          echo ${{ env.RELEASE_VERSION }}
