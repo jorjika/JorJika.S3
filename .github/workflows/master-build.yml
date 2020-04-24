@@ -1,4 +1,4 @@
-name: .NET Core
+name: Build master pushes and pull requests
 
 on:
   push:
