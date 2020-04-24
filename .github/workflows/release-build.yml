@@ -28,9 +28,9 @@ jobs:
     - name: Set env
       run: echo ::set-env name=RELEASE_VERSION::${GITHUB_REF:10}
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build ./src/JorJika.S3.sln --configuration Release --no-restore
     - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test ./src/JorJika.S3.sln --no-restore --verbosity normal
     - name: Echo version
       run: |
           echo $RELEASE_VERSION
