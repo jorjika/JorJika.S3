@@ -39,5 +39,9 @@ jobs:
     - name: Build solution and generate NuGet package
       run: dotnet pack ./src/JorJika.S3.sln -c Release -p:PackageVersion=$RELEASE_VERSION -o ${GITHUB_WORKSPACE}/out  
       
-    - name: Push generated package to GitHub registry
-      run: dotnet nuget push ${GITHUB_WORKSPACE}/out/*.nupkg -k $NUGET_AUTH_TOKEN --skip-duplicate --no-symbols true
+    - name: Push JorJika.S3
+      run: dotnet nuget push ${GITHUB_WORKSPACE}/out/JorJika.S3.*.nupkg -k $NUGET_AUTH_TOKEN --skip-duplicate --no-symbols true
+    - name: Push JorJika.S3.Minio
+      run: dotnet nuget push ${GITHUB_WORKSPACE}/out/JorJika.S3.Minio.*.nupkg -k $NUGET_AUTH_TOKEN --skip-duplicate --no-symbols true
+    - name: Push JorJika.S3.AWS
+      run: dotnet nuget push ${GITHUB_WORKSPACE}/out/JorJika.S3.AWS.*.nupkg -k $NUGET_AUTH_TOKEN --skip-duplicate --no-symbols true
