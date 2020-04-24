@@ -9,7 +9,7 @@ namespace JorJika.S3
     public static class Validation
     {
         public static Regex bucketNameRegex = new Regex("^[a-z0-9\\.]*$", RegexOptions.Compiled);
-        public static Regex objectNameRegex = new Regex("^[a-zA-Z0-9\\/\\.]*[^\\/]$", RegexOptions.Compiled);
+        public static Regex objectNameRegex = new Regex("^[a-zA-Z0-9\\/\\.\\-]*[^\\/]$", RegexOptions.Compiled);
 
         /// <summary>
         /// Validates bucket name
