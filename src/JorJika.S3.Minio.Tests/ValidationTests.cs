@@ -41,7 +41,7 @@ namespace JorJika.S3.Minio.Tests
         [Fact]
         public void Object_name_with_numbers_should_be_valid()
         {
-            Action act = () => Validation.ValidateObjectName("objectname123");
+            Action act = () => Validation.ValidateObjectName("objectname1234");
             act.Should().NotThrow();
         }
 
