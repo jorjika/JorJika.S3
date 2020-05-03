@@ -8,8 +8,8 @@ namespace JorJika.S3
 {
     public static class Validation
     {
-        public static Regex bucketNameRegex = new Regex("^[a-z0-9\\.]*$", RegexOptions.Compiled);
-        public static Regex objectNameRegex = new Regex("^[a-zA-Z0-9\\/\\.\\-]*[^\\/]$", RegexOptions.Compiled);
+        public static Regex bucketNameRegex = new Regex(@"^[a-z0-9\.]*$", RegexOptions.Compiled);
+        public static Regex objectNameRegex = new Regex(@"^[a-zA-Z0-9\/\.\-_]*[^\/]$", RegexOptions.Compiled);
 
         /// <summary>
         /// Validates bucket name
@@ -24,7 +24,7 @@ namespace JorJika.S3
 
         /// <summary>
         /// Validates object name
-        /// Allowed characters are: a-zA-Z0-9 / . - <= Character / Should not be at the end.
+        /// Allowed characters are: '[a-z], [A-Z], [0-9], [/], [.], [-], [_]' <= Character / Should not be at the end.
         /// </summary>
         /// <param name="objectName">Object name</param>
         /// <exception cref="ObjectNameIsNotValidException">Thrown when bucket name is invalid.</exception>
