@@ -23,6 +23,7 @@ namespace JorJika.S3.Models
             Data = data;
         }
 
+        public string ObjectId => $"{BucketName}/{ObjectName}";
         public string ObjectName { get; set; }
         public string BucketName { get; set; }
         public long Size { get; set; }

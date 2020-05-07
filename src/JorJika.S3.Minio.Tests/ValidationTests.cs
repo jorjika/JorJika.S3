@@ -58,5 +58,26 @@ namespace JorJika.S3.Minio.Tests
             Action act = () => Validation.ValidateObjectName("object-image-%@.jpg");
             act.Should().Throw<ObjectNameIsNotValidException>();
         }
+
+        [Fact]
+        public void Object_Id_Should_Throw_ObjectIdIsNotValidException_when_containing_not_allowed_characters()
+        {
+            Action act = () => BucketHelper.ExtractObjectInfo("object-image-%@.jpg");
+            act.Should().Throw<ObjectIdIsNotValidException>();
+        }
+
+        [Fact]
+        public void bucketName_should_be_null_when_does_not_contain_bucket_folder_at_start()
+        {
+            var obj = BucketHelper.ExtractObjectInfo("object-name");
+            obj.bucketName.Should().Be(null);
+        }
+        
+        [Fact]
+        public void bucketName_should_be_bucket1_when_object_id_starts_with_bucket1_and_slash()
+        {
+            var obj = BucketHelper.ExtractObjectInfo("bucket1/object-name");
+            obj.bucketName.Should().Be("bucket1");
+        }
     }
 }
