@@ -104,17 +104,17 @@ namespace JorJika.S3.AWS
             }
         }
 
-        public Task<S3Object> GetObject(string objectName, string bucketName = null)
+        public Task<S3Object> GetObject(string objectName)
         {
             throw new NotImplementedException();
         }
 
-        public Task<S3Object> GetObjectInfo(string objectName, string bucketName = null)
+        public Task<S3Object> GetObjectInfo(string objectName)
         {
             throw new NotImplementedException();
         }
 
-        public Task<string> GetObjectURL(string objectName, int expiresInSeconds = 600, string bucketName = null)
+        public Task<string> GetObjectURL(string objectName, int expiresInSeconds = 600)
         {
             throw new NotImplementedException();
         }
@@ -124,22 +124,22 @@ namespace JorJika.S3.AWS
             throw new NotImplementedException();
         }
 
-        public Task RemoveObject(string objectName, string bucketName = null)
+        public Task RemoveObject(string objectName)
         {
             throw new NotImplementedException();
         }
 
-        public Task SaveObject(string objectName, byte[] objectData, string contentType = null, Dictionary<string, string> metaData = null, string bucketName = null)
+        public Task<string> SaveObject(string objectName, byte[] objectData, string contentType = null, Dictionary<string, string> metaData = null, string bucketName = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task SavePDF(string objectName, byte[] objectData, string fileName = null, string bucketName = null)
+        public Task<string> SavePDF(string objectName, byte[] objectData, string fileName = null, string bucketName = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task SaveText(string objectName, string content, string fileName = null, string fileExtension = "txt", string bucketName = null)
+        public Task<string> SaveText(string objectName, string content, string fileName = null, string fileExtension = "txt", string bucketName = null)
         {
             throw new NotImplementedException();
         }

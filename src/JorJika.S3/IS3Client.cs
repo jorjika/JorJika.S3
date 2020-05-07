@@ -47,7 +47,7 @@ namespace JorJika.S3
         /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
         /// <exception cref="ObjectNotFoundException">Thrown when object is not found.</exception>
         /// <exception cref="S3BaseException">Thrown when exception is not handled.</exception>
-        Task<S3Object> GetObjectInfo(string objectName, string bucketName = null);
+        Task<S3Object> GetObjectInfo(string objectName);
 
         /// <summary>
         /// Get object - With data
@@ -58,7 +58,7 @@ namespace JorJika.S3
         /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
         /// <exception cref="ObjectNotFoundException">Thrown when object is not found.</exception>
         /// <exception cref="S3BaseException">Thrown when exception is not handled.</exception>
-        Task<S3Object> GetObject(string objectName, string bucketName = null);
+        Task<S3Object> GetObject(string objectName);
 
         /// <summary>
         /// Gets object URL for downloading from storage (Temporary URL support varies by implementation)
@@ -70,7 +70,7 @@ namespace JorJika.S3
         /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
         /// <exception cref="ObjectNotFoundException">Thrown when object is not found.</exception>
         /// <exception cref="S3BaseException">Thrown when exception is not handled.</exception>
-        Task<string> GetObjectURL(string objectName, int expiresInSeconds = 10 * 60, string bucketName = null);
+        Task<string> GetObjectURL(string objectName, int expiresInSeconds = 10 * 60);
 
         /// <summary>
         /// Save binary object
@@ -80,10 +80,10 @@ namespace JorJika.S3
         /// <param name="contentType">Content type - Optional (Used for PDF and text files to directly show in browser when issuing temporary link)</param>
         /// <param name="metaData">Object meta data</param>
         /// <param name="bucketName">Bucket name - Optional if passed throuhg constructor</param>
-        /// <returns></returns>
+        /// <returns>Object Id</returns>
         /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
         /// <exception cref="S3BaseException">Thrown when exception is not handled.</exception>
-        Task SaveObject(string objectName, byte[] objectData, string contentType = null, Dictionary<string, string> metaData = null, string bucketName = null);
+        Task<string> SaveObject(string objectName, byte[] objectData, string contentType = null, Dictionary<string, string> metaData = null, string bucketName = null);
 
         /// <summary>
         /// Removes object from storage
@@ -93,7 +93,7 @@ namespace JorJika.S3
         /// <returns></returns>
         /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
         /// <exception cref="S3BaseException">Thrown when exception is not handled.</exception>
-        Task RemoveObject(string objectName, string bucketName = null);
+        Task RemoveObject(string objectName);
 
         /// <summary>
         /// Save text file to storage
@@ -103,10 +103,10 @@ namespace JorJika.S3
         /// <param name="fileName">File name - Optional (If you are downloading file from browser file name is automatically filled with this value)</param>
         /// <param name="fileExtension">File extension, defaults to txt.</param>
         /// <param name="bucketName">Bucket name - Optional if passed throuhg constructor</param>
-        /// <returns></returns>
+        /// <returns>Object Id</returns>
         /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
         /// <exception cref="S3BaseException">Thrown when exception is not handled.</exception>
-        Task SaveText(string objectName, string content, string fileName = null, string fileExtension = "txt", string bucketName = null);
+        Task<string> SaveText(string objectName, string content, string fileName = null, string fileExtension = "txt", string bucketName = null);
 
         /// <summary>
         /// Save pdf file to storage
@@ -115,10 +115,10 @@ namespace JorJika.S3
         /// <param name="objectData">PDF file byte array</param>
         /// <param name="fileName">File name - Optional (If you are downloading file from browser file name is automatically filled with this value)</param>
         /// <param name="bucketName">Bucket name - Optional if passed throuhg constructor</param>
-        /// <returns></returns>
+        /// <returns>Object Id</returns>
         /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
         /// <exception cref="S3BaseException">Thrown when exception is not handled.</exception>
-        Task SavePDF(string objectName, byte[] objectData, string fileName = null, string bucketName = null);
+        Task<string> SavePDF(string objectName, byte[] objectData, string fileName = null, string bucketName = null);
 
         #endregion
     }

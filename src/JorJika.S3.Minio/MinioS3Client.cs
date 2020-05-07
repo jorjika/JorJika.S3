@@ -174,9 +174,11 @@ namespace JorJika.S3
         /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
         /// <exception cref="ObjectNotFoundException">Thrown when object is not found.</exception>
         /// <exception cref="S3BaseException">Thrown when exception is not handled.</exception>
-        public async Task<S3Object> GetObjectInfo(string objectName, string bucketName = null)
+        public async Task<S3Object> GetObjectInfo(string objectName)
         {
-            var bucket = bucketName?.ToLower() ?? _bucketName;
+            var s3Obj = BucketHelper.ExtractObjectInfo(objectName);
+            var bucket = s3Obj.bucketName?.ToLower() ?? _bucketName;
+            var objectId = s3Obj.objectName;
 
             S3Object result = null;
 
@@ -184,9 +186,9 @@ namespace JorJika.S3
             {
                 result = await _requestRetryPolicy.ExecuteAsync(async () =>
                 {
-                    var response = await _objectOperationsClient.StatObjectAsync(bucket, objectName);
+                    var response = await _objectOperationsClient.StatObjectAsync(bucket, objectId);
 
-                    if (response == null) throw new Exceptions.ObjectNotFoundException(objectName, bucket);
+                    if (response == null) throw new Exceptions.ObjectNotFoundException(objectId, bucket);
 
                     return new S3Object(response.ObjectName, bucket, response.Size, response.ETag, response.ContentType, response.MetaData, null);
                 });
@@ -220,11 +222,13 @@ namespace JorJika.S3
         /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
         /// <exception cref="ObjectNotFoundException">Thrown when object is not found.</exception>
         /// <exception cref="S3BaseException">Thrown when exception is not handled.</exception>
-        public async Task<S3Object> GetObject(string objectName, string bucketName = null)
+        public async Task<S3Object> GetObject(string objectName)
         {
-            var bucket = bucketName?.ToLower() ?? _bucketName;
+            var s3Obj = BucketHelper.ExtractObjectInfo(objectName);
+            var bucket = s3Obj.bucketName?.ToLower() ?? _bucketName;
+            var objectId = s3Obj.objectName;
 
-            var result = await GetObjectInfo(objectName, bucket);
+            var result = await GetObjectInfo(objectName);
 
             try
             {
@@ -232,7 +236,7 @@ namespace JorJika.S3
                 {
                     byte[] data = null;
 
-                    await _objectOperationsClient.GetObjectAsync(bucket, objectName, (s) =>
+                    await _objectOperationsClient.GetObjectAsync(bucket, objectId, (s) =>
                     {
                         using (var ms = new MemoryStream())
                         {
@@ -281,9 +285,11 @@ namespace JorJika.S3
         /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
         /// <exception cref="ObjectNotFoundException">Thrown when object is not found.</exception>
         /// <exception cref="S3BaseException">Thrown when exception is not handled.</exception>
-        public async Task<string> GetObjectURL(string objectName, int expiresInSeconds = 600, string bucketName = null)
+        public async Task<string> GetObjectURL(string objectName, int expiresInSeconds = 600)
         {
-            var bucket = bucketName?.ToLower() ?? _bucketName;
+            var s3Obj = BucketHelper.ExtractObjectInfo(objectName);
+            var bucket = s3Obj.bucketName?.ToLower() ?? _bucketName;
+            var objectId = s3Obj.objectName;
 
             string result = null;
 
@@ -291,7 +297,7 @@ namespace JorJika.S3
             {
                 result = await _requestRetryPolicy.ExecuteAsync(async () =>
                 {
-                    return await _objectOperationsClient.PresignedGetObjectAsync(bucket, objectName, expiresInSeconds);
+                    return await _objectOperationsClient.PresignedGetObjectAsync(bucket, objectId, expiresInSeconds);
                 });
 
                 if (result == null)
@@ -326,15 +332,18 @@ namespace JorJika.S3
         /// <param name="contentType">Content type - Optional (Used for PDF and text files to directly show in browser when issuing temporary link)</param>
         /// <param name="metaData">Object meta data</param>
         /// <param name="bucketName">Bucket name - Optional if passed throuhg constructor</param>
-        /// <returns></returns>
+        /// <returns>Object Id</returns>
         /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
         /// <exception cref="S3BaseException">Thrown when exception is not handled.</exception>
-        public async Task SaveObject(string objectName, byte[] objectData, string contentType = null, Dictionary<string, string> metaData = null, string bucketName = null)
+        public async Task<string> SaveObject(string objectName, byte[] objectData, string contentType = null, Dictionary<string, string> metaData = null, string bucketName = null)
         {
             var bucket = bucketName?.ToLower() ?? _bucketName;
 
             Validation.ValidateBucketName(bucket);
             Validation.ValidateObjectName(objectName);
+
+            if (objectName.StartsWith(bucket))
+                objectName = objectName.Replace($"{bucket}/", "");
 
             try
             {
@@ -365,6 +374,8 @@ namespace JorJika.S3
             {
                 throw new S3BaseException(ex.Message, ex.ToString());
             }
+
+            return $"{bucket}/{objectName}";
         }
 
         /// <summary>
@@ -375,15 +386,17 @@ namespace JorJika.S3
         /// <returns></returns>
         /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
         /// <exception cref="S3BaseException">Thrown when exception is not handled.</exception>
-        public async Task RemoveObject(string objectName, string bucketName = null)
+        public async Task RemoveObject(string objectName)
         {
-            var bucket = bucketName?.ToLower() ?? _bucketName;
+            var s3Obj = BucketHelper.ExtractObjectInfo(objectName);
+            var bucket = s3Obj.bucketName?.ToLower() ?? _bucketName;
+            var objectId = s3Obj.objectName;
 
             try
             {
                 await _requestRetryPolicy.ExecuteAsync(async () =>
                 {
-                    await _objectOperationsClient.RemoveObjectAsync(bucket, objectName);
+                    await _objectOperationsClient.RemoveObjectAsync(bucket, objectId);
                 });
             }
             catch (MinioException ex) when (ex is ConnectionException
@@ -412,10 +425,10 @@ namespace JorJika.S3
         /// <param name="fileName">File name - Optional (If you are downloading file from browser file name is automatically filled with this value)</param>
         /// <param name="fileExtension">File extension, defaults to txt.</param>
         /// <param name="bucketName">Bucket name - Optional if passed throuhg constructor</param>
-        /// <returns></returns>
+        /// <returns>Object Id</returns>
         /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
         /// <exception cref="S3BaseException">Thrown when exception is not handled.</exception>
-        public async Task SaveText(string objectName, string content, string fileName = null, string fileExtension = "txt", string bucketName = null)
+        public async Task<string> SaveText(string objectName, string content, string fileName = null, string fileExtension = "txt", string bucketName = null)
         {
             var metaData = new Dictionary<string, string>();
 
@@ -427,7 +440,7 @@ namespace JorJika.S3
 
 
             var bucket = bucketName?.ToLower() ?? _bucketName;
-            await SaveObject(objectName, System.Text.Encoding.UTF8.GetBytes(content), "text/plain", metaData, bucket);
+            return await SaveObject(objectName, System.Text.Encoding.UTF8.GetBytes(content), "text/plain", metaData, bucket);
         }
 
         /// <summary>
@@ -437,10 +450,10 @@ namespace JorJika.S3
         /// <param name="objectData">PDF file byte array</param>
         /// <param name="fileName">File name - Optional (If you are downloading file from browser file name is automatically filled with this value)</param>
         /// <param name="bucketName">Bucket name - Optional if passed throuhg constructor</param>
-        /// <returns></returns>
+        /// <returns>Object Id</returns>
         /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
         /// <exception cref="S3BaseException">Thrown when exception is not handled.</exception>
-        public async Task SavePDF(string objectName, byte[] objectData, string fileName = null, string bucketName = null)
+        public async Task<string> SavePDF(string objectName, byte[] objectData, string fileName = null, string bucketName = null)
         {
             var bucket = bucketName?.ToLower() ?? _bucketName;
             var metaData = new Dictionary<string, string>();
@@ -450,7 +463,7 @@ namespace JorJika.S3
 
             metaData.Add($"{metaDataPrefix}FileExtension", "pdf");
 
-            await SaveObject(objectName, objectData, "application/pdf", metaData, bucket);
+            return await SaveObject(objectName, objectData, "application/pdf", metaData, bucket);
         }
 
         #endregion
