@@ -41,36 +41,36 @@ namespace JorJika.S3
         /// <summary>
         /// Gets object information - Without file data
         /// </summary>
-        /// <param name="objectName">Object name</param>
+        /// <param name="objectId">Object Id</param>
         /// <param name="bucketName">Bucket name - Optional if passed throuhg constructor</param>
         /// <returns>Returns object information and metadata</returns>
         /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
         /// <exception cref="ObjectNotFoundException">Thrown when object is not found.</exception>
         /// <exception cref="S3BaseException">Thrown when exception is not handled.</exception>
-        Task<S3Object> GetObjectInfo(string objectName);
+        Task<S3Object> GetObjectInfo(string objectId);
 
         /// <summary>
         /// Get object - With data
         /// </summary>
-        /// <param name="objectName">Object name</param>
+        /// <param name="objectId">Object Id</param>
         /// <param name="bucketName">Bucket name - Optional if passed throuhg constructor</param>
         /// <returns>Returns actual object data - bytes</returns>
         /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
         /// <exception cref="ObjectNotFoundException">Thrown when object is not found.</exception>
         /// <exception cref="S3BaseException">Thrown when exception is not handled.</exception>
-        Task<S3Object> GetObject(string objectName);
+        Task<S3Object> GetObject(string objectId);
 
         /// <summary>
         /// Gets object URL for downloading from storage (Temporary URL support varies by implementation)
         /// </summary>
-        /// <param name="objectName">Object name</param>
+        /// <param name="objectId">Object Id</param>
         /// <param name="expiresInSeconds">Temporary link expiration time in seconds. Defaults to 12 hours</param>
         /// <param name="bucketName">Bucket name - Optional if passed throuhg constructor</param>
         /// <returns>Returns temporary URL of object for download</returns>
         /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
         /// <exception cref="ObjectNotFoundException">Thrown when object is not found.</exception>
         /// <exception cref="S3BaseException">Thrown when exception is not handled.</exception>
-        Task<string> GetObjectURL(string objectName, int expiresInSeconds = 10 * 60);
+        Task<string> GetObjectURL(string objectId, int expiresInSeconds = 10 * 60);
 
         /// <summary>
         /// Save binary object
@@ -88,12 +88,12 @@ namespace JorJika.S3
         /// <summary>
         /// Removes object from storage
         /// </summary>
-        /// <param name="objectName">Object name</param>
+        /// <param name="objectId">Object Id</param>
         /// <param name="bucketName">Bucket name - Optional if passed throuhg constructor</param>
         /// <returns></returns>
         /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
         /// <exception cref="S3BaseException">Thrown when exception is not handled.</exception>
-        Task RemoveObject(string objectName);
+        Task RemoveObject(string objectId);
 
         /// <summary>
         /// Save text file to storage
