@@ -5,6 +5,10 @@
     <RepositoryUrl>https://github.com/jorjika/JorJika.S3</RepositoryUrl>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="AWSSDK.S3" Version="3.3.110.6" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.0.1" />
