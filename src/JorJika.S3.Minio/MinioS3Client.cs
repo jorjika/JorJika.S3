@@ -32,23 +32,25 @@ namespace JorJika.S3
 
         #region Constructor
 
-        public MinioS3Client(string endpoint, string accessKey, string secretKey, string bucketName)
-                      : this(endpoint, accessKey, secretKey, bucketName, null, 0, 0)
+        public MinioS3Client(string endpoint, string accessKey, string secretKey, string bucketName, bool ssl = false)
+                       : this(endpoint, accessKey, secretKey, bucketName, null, 0, 0, ssl)
         {
         }
 
 
-        public MinioS3Client(string endpoint, string accessKey, string secretKey, string bucketName, ILogger<IS3Client> logger)
-                      : this(endpoint, accessKey, secretKey, bucketName, logger, 0, 0)
+        public MinioS3Client(string endpoint, string accessKey, string secretKey, string bucketName, ILogger<IS3Client> logger, bool ssl = false)
+                      : this(endpoint, accessKey, secretKey, bucketName, logger, 0, 0, ssl)
         {
         }
-        public MinioS3Client(string endpoint, string accessKey, string secretKey, string bucketName, int retryCount, int retryInSeconds)
-                      : this(endpoint, accessKey, secretKey, bucketName, null, retryCount, retryInSeconds)
+        public MinioS3Client(string endpoint, string accessKey, string secretKey, string bucketName, int retryCount, int retryInSeconds, bool ssl = false)
+                      : this(endpoint, accessKey, secretKey, bucketName, null, retryCount, retryInSeconds, ssl)
         {
         }
 
-        public MinioS3Client(string endpoint, string accessKey, string secretKey, string bucketName, ILogger<IS3Client> logger, int retryCount, int retryInSeconds)
-            : this(new MinioClient(endpoint, accessKey: accessKey, secretKey: secretKey), new MinioClient(endpoint, accessKey: accessKey, secretKey: secretKey), endpoint, bucketName, logger, retryCount, retryInSeconds)
+        public MinioS3Client(string endpoint, string accessKey, string secretKey, string bucketName, ILogger<IS3Client> logger, int retryCount, int retryInSeconds, bool ssl = false)
+            : this(ssl ? new MinioClient(endpoint, accessKey: accessKey, secretKey: secretKey).WithSSL() : new MinioClient(endpoint, accessKey: accessKey, secretKey: secretKey),
+                  ssl ? new MinioClient(endpoint, accessKey: accessKey, secretKey: secretKey).WithSSL() : new MinioClient(endpoint, accessKey: accessKey, secretKey: secretKey),
+                  endpoint, bucketName, logger, retryCount, retryInSeconds)
         {
         }
 
