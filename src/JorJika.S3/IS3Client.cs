@@ -42,7 +42,6 @@ namespace JorJika.S3
         /// Gets object information - Without file data
         /// </summary>
         /// <param name="objectId">Object Id</param>
-        /// <param name="bucketName">Bucket name - Optional if passed throuhg constructor</param>
         /// <returns>Returns object information and metadata</returns>
         /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
         /// <exception cref="ObjectNotFoundException">Thrown when object is not found.</exception>
@@ -53,7 +52,6 @@ namespace JorJika.S3
         /// Get object - With data
         /// </summary>
         /// <param name="objectId">Object Id</param>
-        /// <param name="bucketName">Bucket name - Optional if passed throuhg constructor</param>
         /// <returns>Returns actual object data - bytes</returns>
         /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
         /// <exception cref="ObjectNotFoundException">Thrown when object is not found.</exception>
@@ -65,7 +63,6 @@ namespace JorJika.S3
         /// </summary>
         /// <param name="objectId">Object Id</param>
         /// <param name="expiresInSeconds">Temporary link expiration time in seconds. Defaults to 12 hours</param>
-        /// <param name="bucketName">Bucket name - Optional if passed throuhg constructor</param>
         /// <returns>Returns temporary URL of object for download</returns>
         /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
         /// <exception cref="ObjectNotFoundException">Thrown when object is not found.</exception>
@@ -89,7 +86,6 @@ namespace JorJika.S3
         /// Removes object from storage
         /// </summary>
         /// <param name="objectId">Object Id</param>
-        /// <param name="bucketName">Bucket name - Optional if passed throuhg constructor</param>
         /// <returns></returns>
         /// <exception cref="EndpointUnreachableException">Thrown when S3 endpoint is unreachable.</exception>
         /// <exception cref="S3BaseException">Thrown when exception is not handled.</exception>
